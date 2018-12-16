@@ -1,3 +1,7 @@
 
 __pycache__/util.cpython-37.pyc
 scraped.csv
+.vscode/settings.json
+.ipynb_checkpoints/Untitled-checkpoint.ipynb
+*.pyc
+.ipynb_checkpoints/analysis-checkpoint.ipynb

@@ -1,10 +1,55 @@
-from bs4 import BeautifulSoup
-import requests
+import scrapy
+from scrapy.selector import Selector
+from scrapy.http import HtmlResponse
+from scrapy.crawler import CrawlerProcess
+
 import pandas as pd
 import util
+from bs4 import BeautifulSoup
+
+# ['player_id', 'player_name', 'event_id', 'event_name',
+#                                 'tour', 'week', 'year', 'finish', 'points', 'weight', 'adj_points'])
 
 
-# Find links to X first players pages
+class PlayerDataSpider(scrapy.Spider):
+    nr_players = 1
+
+    def __init__(self, nr_players="1", *args, **kwargs):
+        super(PlayerDataSpider, self).__init__(*args, **kwargs)
+        self.nr_players = int(nr_players)
+
+    name = 'PlayerData'
+    start_urls = ["http://www.owgr.com/ranking?pageNo=1&pageSize=%d&country=All" % (
+        nr_players)]
+    urls = []
+
+    def parse_player_page(self, response):
+        rows = response.xpath(
+            '//*[@id="player_results"]/*[@class="table_container"]/table//tr')[1:]
+        items = []
+        for row in rows:
+            item = PlayerResult()
+            item['event_id'] = row.xpath('.//a/@href').extract()
+            items.append(item)
+        return items
+
+    def parse(self, response):
+        urls = response.xpath(
+            '//*[@id="ranking_table"]/*[@class="table_container"]/table//a/@href').extract()
+        items = []
+        for url in urls:
+            new_items = yield response.follow(url, self.parse_player_page)
+            items.append(new_items)
+
+
+process = CrawlerProcess({
+    'USER_AGENT': 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1)'
+})
+
+process.crawl(PlayerDataSpider)
+process.start()  # the script will block here until the crawling is finished
+
+
 def scrape_player_data(nr_players):
     url = "http://www.owgr.com/ranking?pageNo=1&pageSize=%d&country=All" % (
         nr_players)
@@ -115,4 +160,4 @@ def get_current_pgatour_tournament_ids():
     tournament_id = r.json()['tid']
 
 
-get_current_pgatour_tournament_ids()
+# get_current_pgatour_tournament_ids()
