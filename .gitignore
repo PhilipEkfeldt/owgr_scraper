@@ -5,3 +5,4 @@ scraped.csv
 .ipynb_checkpoints/Untitled-checkpoint.ipynb
 *.pyc
 .ipynb_checkpoints/analysis-checkpoint.ipynb
+owgr_scraper/owgr_scraper/config.py
