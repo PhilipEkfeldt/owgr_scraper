@@ -41,11 +41,6 @@ class PlayerDataSpider(scrapy.Spider):
             item['adj_points'] = row.xpath(
                 './/td[8]/text()').extract_first().replace("-", "0")
 
-            #year = int(rowcells[3].string)
-            #finish = str(rowcells[4].string)
-            #points = float(rowcells[5].string.replace("-", "0"))
-            #weight = float(rowcells[6].string)
-            #adj_points = float(rowcells[7].string.replace("-", "0"))
             yield item
 
     def parse(self, response):

@@ -3,7 +3,7 @@ import scrapy
 from ..items import Tournament
 
 
-class CurrenttournamentsSpider(scrapy.Spider):
+class CurrentTournamentsSpider(scrapy.Spider):
     name = 'CurrentTournaments'
     start_urls = ['http://www.owgr.com/events/']
 

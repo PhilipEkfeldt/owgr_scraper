@@ -8,7 +8,9 @@
 
 import psycopg2
 from .config import HOSTNAME, USERNAME, PASSWORD, DATABASE
-from .items import Player, PlayerResult
+from .items import Player, PlayerResult, Tournament
+from .spiders.player_data import PlayerDataSpider
+from .spiders.CurrentTournaments import CurrentTournamentsSpider
 # Code taken from https://medium.com/codelog/store-scrapy-crawled-data-in-postgressql-2da9e62ae272 and modified
 
 
@@ -23,9 +25,12 @@ class PostgresPipeline(object):
         self.connection = psycopg2.connect(
             host=hostname, user=username, password=password, dbname=database)
         self.cur = self.connection.cursor()
-        self.cur.execute('delete from "PlayerEvents"')
+        if isinstance(spider, PlayerDataSpider):
+            self.cur.execute('delete from "PlayerEvents"')
 
-        self.cur.execute('delete from "Players"')
+            self.cur.execute('delete from "Players"')
+        elif isinstance(spider, CurrentTournamentsSpider):
+            self.cur.execute('delete from "CurrentTournaments"')
 
     def close_spider(self, spider):
         self.cur.close()
@@ -58,5 +63,9 @@ class PostgresPipeline(object):
                               item['points'],
                               item['weight'],
                               item['adj_points']))
+            self.connection.commit()
+        elif isinstance(item, Tournament):
+            self.cur.execute('insert into "CurrentTournaments"(name, tour, field_strength, points) values(%s,%s, %s, %s)',
+                             (item['name'], item['tour'], item['field_strength'], item['points']))
             self.connection.commit()
         return item
