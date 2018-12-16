@@ -31,3 +31,7 @@ class Tournament(scrapy.Item):
     tour = scrapy.Field()
     field_strength = scrapy.Field()
     points = scrapy.Field()
+
+
+class RankingUpdatedDate(scrapy.Item):
+    date = scrapy.Field()

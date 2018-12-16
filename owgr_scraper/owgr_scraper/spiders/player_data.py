@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 import scrapy
-from ..items import PlayerResult, Player
+from ..items import PlayerResult, Player, RankingUpdatedDate
+from datetime import datetime
+import re
 
 
 class PlayerDataSpider(scrapy.Spider):
@@ -44,6 +46,16 @@ class PlayerDataSpider(scrapy.Spider):
             yield item
 
     def parse(self, response):
+        # date parsing solution: https://stackoverflow.com/a/21496318
+        def solve(s):
+            return re.sub(r'(\d)(st|nd|rd|th)', r'\1', s)
+        date = response.xpath(
+            '//time[@class="sub_header"]/text()').extract_first()
+        date = solve(date)
+
+        date = datetime.strptime(date, "%d %B %Y").date()
+
+        yield RankingUpdatedDate(date=str(date))
         urls = response.xpath(
             '//*[@id="ranking_table"]/*[@class="table_container"]/table//a/@href').extract()
         for url in urls:
