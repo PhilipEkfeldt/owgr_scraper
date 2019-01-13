@@ -6,3 +6,4 @@ scraped.csv
 *.pyc
 .ipynb_checkpoints/analysis-checkpoint.ipynb
 owgr_scraper/owgr_scraper/config.py
+WebApp_Old*
