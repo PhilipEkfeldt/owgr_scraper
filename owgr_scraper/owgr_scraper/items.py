@@ -24,6 +24,7 @@ class PlayerResult(scrapy.Item):
 class Player(scrapy.Item):
     player_id = scrapy.Field()
     player_name = scrapy.Field()
+    rank = scrapy.Field()
 
 
 class Tournament(scrapy.Item):

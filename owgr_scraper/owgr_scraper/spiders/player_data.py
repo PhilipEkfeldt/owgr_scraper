@@ -6,7 +6,6 @@ import re
 
 
 class PlayerDataSpider(scrapy.Spider):
-    name = 'player_data'
 
     def __init__(self, nr_players="1", *args, **kwargs):
         super(PlayerDataSpider, self).__init__(*args, **kwargs)
@@ -23,9 +22,11 @@ class PlayerDataSpider(scrapy.Spider):
         player_id = response.request.url.partition("=")[2]
         player_name = response.xpath(
             '//*[@id="player_results"]/h2/text()').extract_first()
-
+        rank = response.xpath(
+            '//*[@id="player_results"]/span[@class="sub_header"]/text()').extract_first().split(' ')[-1]
         yield Player(player_name=player_name,
-                     player_id=player_id)
+                     player_id=player_id,
+                     rank=rank)
 
         for row in rows:
             item = PlayerResult()

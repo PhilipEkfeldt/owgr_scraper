@@ -45,8 +45,8 @@ class PostgresPipeline(object):
 
     def process_item(self, item, spider):
         if isinstance(item, Player):
-            self.cur.execute('insert into "Players"(player_id, player_name) values(%s,%s)',
-                             (item['player_id'], item['player_name']))
+            self.cur.execute('insert into "Players"(player_id, player_name, current_rank) values(%s,%s,%s)',
+                             (item['player_id'], item['player_name'], item['rank']))
             self.connection.commit()
         elif isinstance(item, PlayerResult):
             self.cur.execute('insert into "PlayerEvents"( player_id, \
