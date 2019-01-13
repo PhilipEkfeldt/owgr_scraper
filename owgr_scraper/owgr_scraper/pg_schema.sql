@@ -64,7 +64,8 @@ ALTER TABLE public."PlayerEvents" OWNER TO postgres;
 
 CREATE TABLE public."Players" (
     player_id text NOT NULL,
-    player_name text NOT NULL
+    player_name text NOT NULL,
+    current_rank integer
 );
 
 
